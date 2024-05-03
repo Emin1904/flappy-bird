@@ -55,5 +55,68 @@ class fågel:
         
     def visa(self):
         pygame.draw.circle(skärm, SVART, (self.x, self.y), 20)
+    def uppdatera(self):
+        self.hastighet += self.gravitation
+        self.hastighet *= 0.9
+        self.y += self.hastighet
+
+        if self.y > SKÄRM_HÖJD:
+            self.y = SKÄRM_HÖJD
+            self.hastighet = 0
+        if self.y < 0:
+            self.y = 0
+            self.hastighet = 0
+
+    def hoppa(self):
+        self.hastighet += self.lyft
+        
+class Rör:
+    def __init__(self):
+        self.x = SKÄRM_BREDD
+        self.glugg = 200
+        self.över = random.randint(100, SKÄRM_HÖJD - self.glugg - 100)
+        self.under = self.över + self.glugg
+        self.hastighet = 0
+        self.rör_bredd = 50
+        self.poängad = False
+        
+    def visa(self):
+        pygame.draw.rect(skärm, GRÖN, (self.x, 0, self.rör_bredd, self.över))
+        pygame.draw.rect(skärm, GRÖN, (self.x, self.under, self.rör_bredd, SKÄRM_HÖJD - self.under))
+
+    def uppdatera(self):
+        self.x -= self.hastighet
+
+def skapa_rör():
+    rör = []
+    for _ in range(5):
+        nytt_rör = Rör()
+        nytt_rör.hastighet = rör_hastighet
+        rör.append(nytt_rör)
+    return rör
+
+def huvud(spel_nivå):
+    fågel = Fågel()
+    poäng = 0
+    global rör_hastighet
+    if spel_nivå == "enkel":
+        rör_hastighet = 2
+    elif spel_nivå == "medel":
+        rör_hastighet = 4
+    elif spel_nivå == "svår":
+        rör_hastighet = 6
+
+    rör = skapa_rör()
+
+    score_font = pygame.font.Font(None, 36)
+
+    while True:
+        for händelse in pygame.event.get():
+            if händelse.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if händelse.type == pygame.KEYDOWN:
+                if händelse.key == pygame.K_SPACE:
+                    fågel.hoppa()
 
 
