@@ -131,19 +131,39 @@ def huvud(spel_nivå):
             röret.uppdatera()
 
             
-        if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
+            if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
                 if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
                     print("Spelet är över! Din poäng:", poäng)
                     pygame.quit()
                     sys.exit()
-        if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
+            if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
                 if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
                     print("Spelet är över! Din poäng:", poäng)
                     pygame.quit()
                     sys.exit()
 
             
-        if röret.x + röret.rör_bredd < fågel.x - 20 and not röret.poängad:
+            if röret.x + röret.rör_bredd < fågel.x - 20 and not röret.poängad:
                 röret.poängad = True
                 poäng += 1
                 print("Poäng:", poäng)
+        
+        if rör[0].x < -50:
+            rör.pop(0)
+
+        
+        skärm.fill(VIT)
+        fågel.visa()
+        for röret in rör:
+            röret.visa()
+
+       
+        score_text = score_font.render("Poäng: " + str(poäng), True, SVART)
+        skärm.blit(score_text, (10, 10))
+
+        pygame.display.update()
+        pygame.time.Clock().tick(FPS)
+
+if __name__ == "__main__":
+    huvud(spel_nivå)
+ 
