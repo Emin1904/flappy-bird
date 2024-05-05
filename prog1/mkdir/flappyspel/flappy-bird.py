@@ -45,7 +45,7 @@ def välj_svårighetsnivå():
                     return "svår"
 spel_nivå = välj_svårighetsnivå()
 
-class fågel:
+class Fågel:
     def __init__(self):
         self.x = 50
         self.y = SKÄRM_HÖJD // 2
@@ -119,4 +119,31 @@ def huvud(spel_nivå):
                 if händelse.key == pygame.K_SPACE:
                     fågel.hoppa()
 
+        fågel.uppdatera()
 
+        
+        if rör[-1].x < SKÄRM_BREDD - 200:
+            rör.append(Rör())
+            rör[-1].hastighet = rör_hastighet
+
+        
+        for röret in rör:
+            röret.uppdatera()
+
+            
+        if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
+                if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
+                    print("Spelet är över! Din poäng:", poäng)
+                    pygame.quit()
+                    sys.exit()
+        if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
+                if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
+                    print("Spelet är över! Din poäng:", poäng)
+                    pygame.quit()
+                    sys.exit()
+
+            
+        if röret.x + röret.rör_bredd < fågel.x - 20 and not röret.poängad:
+                röret.poängad = True
+                poäng += 1
+                print("Poäng:", poäng)
