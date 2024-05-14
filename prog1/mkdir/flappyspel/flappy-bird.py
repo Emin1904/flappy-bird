@@ -2,8 +2,10 @@ import pygame
 import sys
 import random
 
+# Initialisera pygame
 pygame.init()
 
+# Konstanter
 SKÄRM_BREDD = 400
 SKÄRM_HÖJD = 600
 VIT = (255, 255, 255)
@@ -11,18 +13,22 @@ SVART = (0, 0, 0)
 GRÖN = (0, 255, 0)
 FPS = 60
 
+# Skapa skärmen
 skärm = pygame.display.set_mode((SKÄRM_BREDD, SKÄRM_HÖJD))
 pygame.display.set_caption("Flappy Bird")
 
+# Skapa menytext 
 font = pygame.font.Font(None, 36)
 enkel_text = font.render("Enkel", True, SVART)
 medel_text = font.render("Medel", True, SVART)
 svår_text = font.render("Svår", True, SVART)
 
+# Centrera texten
 enkel_rect = enkel_text.get_rect(center=(SKÄRM_BREDD // 2, SKÄRM_HÖJD // 2 - 50))
 medel_rect = medel_text.get_rect(center=(SKÄRM_BREDD // 2, SKÄRM_HÖJD // 2))
 svår_rect = svår_text.get_rect(center=(SKÄRM_BREDD // 2, SKÄRM_HÖJD // 2 + 50))
 
+# Visa meny
 skärm.fill(VIT)
 skärm.blit(enkel_text, enkel_rect)
 skärm.blit(medel_text, medel_rect)
@@ -45,6 +51,7 @@ def välj_svårighetsnivå():
                     return "svår"
 spel_nivå = välj_svårighetsnivå()
 
+# Bird class
 class Fågel:
     def __init__(self):
         self.x = 50
@@ -69,7 +76,8 @@ class Fågel:
 
     def hoppa(self):
         self.hastighet += self.lyft
-        
+      
+      # Pipe class  
 class Rör:
     def __init__(self):
         self.x = SKÄRM_BREDD
@@ -78,7 +86,8 @@ class Rör:
         self.under = self.över + self.glugg
         self.hastighet = 0
         self.rör_bredd = 50
-        self.poängad = False
+        self.poängad = False    # Flagga för att hålla koll på om röret har poängats
+
         
     def visa(self):
         pygame.draw.rect(skärm, GRÖN, (self.x, 0, self.rör_bredd, self.över))
@@ -118,46 +127,43 @@ def huvud(spel_nivå):
             if händelse.type == pygame.KEYDOWN:
                 if händelse.key == pygame.K_SPACE:
                     fågel.hoppa()
-
+ 
         fågel.uppdatera()
 
-        
+   # Skapa rör      
         if rör[-1].x < SKÄRM_BREDD - 200:
             rör.append(Rör())
             rör[-1].hastighet = rör_hastighet
 
-        
+        # Uppdatera rören
         for röret in rör:
             röret.uppdatera()
 
-            
+            # Kolla kollision
             if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
                 if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
                     print("Spelet är över! Din poäng:", poäng)
                     pygame.quit()
                     sys.exit()
-            if fågel.x + 20 > röret.x and fågel.x - 20 < röret.x + röret.rör_bredd:
-                if fågel.y - 20 < röret.över or fågel.y + 20 > röret.under:
-                    print("Spelet är över! Din poäng:", poäng)
-                    pygame.quit()
-                    sys.exit()
+                    
 
-            
+           # Kolla poäng
             if röret.x + röret.rör_bredd < fågel.x - 20 and not röret.poängad:
                 röret.poängad = True
                 poäng += 1
                 print("Poäng:", poäng)
         
+         # Ta bort rör som har gått utanför skärmen
         if rör[0].x < -50:
             rör.pop(0)
 
-        
+         # Rita allt
         skärm.fill(VIT)
         fågel.visa()
         for röret in rör:
             röret.visa()
 
-       
+        # Visa poängen på skärmen
         score_text = score_font.render("Poäng: " + str(poäng), True, SVART)
         skärm.blit(score_text, (10, 10))
 
